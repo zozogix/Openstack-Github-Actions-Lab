@@ -28,5 +28,5 @@ jobs:
 
       - name: Deploy VM
         run: |
-          chmod +x scripts/deploy_vm.sh
+          sudo chmod +x scripts/deploy_vm.sh
           ./scripts/deploy_vm.sh
