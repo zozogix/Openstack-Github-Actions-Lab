@@ -1,0 +1,20 @@
+name: Deploy VM on OpenStack
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Load OpenStack credentials
+        run: |
+          source ~/openstack.rc
+
+      - name: Deploy VM
+        run: |
+          ./scripts/deploy_vm.sh
