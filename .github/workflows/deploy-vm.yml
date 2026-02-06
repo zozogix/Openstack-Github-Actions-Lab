@@ -1,20 +1,32 @@
-name: Deploy VM on OpenStack
+name: Deploy Alpine VM
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [ main ]
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install OpenStack client
+        run: |
+          sudo apt update
+          sudo apt install -y python3-openstackclient
 
       - name: Load OpenStack credentials
         run: |
-          source ~/openstack.rc
+          echo "OS_AUTH_URL=${{ secrets.OS_AUTH_URL }}" >> $GITHUB_ENV
+          echo "OS_USERNAME=${{ secrets.OS_USERNAME }}" >> $GITHUB_ENV
+          echo "OS_PASSWORD=${{ secrets.OS_PASSWORD }}" >> $GITHUB_ENV
+          echo "OS_PROJECT_NAME=${{ secrets.OS_PROJECT_NAME }}" >> $GITHUB_ENV
+          echo "OS_USER_DOMAIN_NAME=Default" >> $GITHUB_ENV
+          echo "OS_PROJECT_DOMAIN_NAME=Default" >> $GITHUB_ENV
 
       - name: Deploy VM
         run: |
+          chmod +x scripts/deploy_vm.sh
           ./scripts/deploy_vm.sh
