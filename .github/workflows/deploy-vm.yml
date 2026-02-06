@@ -21,7 +21,7 @@ jobs:
         run: |
           echo "OS_AUTH_URL=${{ secrets.MICROSTACK }}" >> $GITHUB_ENV
           echo "OS_USERNAME=${{ secrets.OS_USERNAME }}" >> $GITHUB_ENV
-          echo "OS_PASSWORD=${{ secrets.OS_PASSWORD }}" >> $GITHUB_ENV
+          echo "OS_PASSWORD=${{ secrets.MICROSTACK }}" >> $GITHUB_ENV
           echo "OS_PROJECT_NAME=${{ secrets.OS_PROJECT_NAME }}" >> $GITHUB_ENV
           echo "OS_USER_DOMAIN_NAME=Default" >> $GITHUB_ENV
           echo "OS_PROJECT_DOMAIN_NAME=Default" >> $GITHUB_ENV
