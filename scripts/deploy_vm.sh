@@ -1,15 +1,16 @@
 #!/bin/bash
+set -e
 
 VM_NAME="alpine-web"
 IMAGE="Alpine3.21"
-FLAVOR="Leger"
+FLAVOR="Minus"
 NETWORK="LAN-LABO"
-KEY="mykey"
+KEY="zoly-key"
 
 openstack server create \
   --image "$IMAGE" \
   --flavor "$FLAVOR" \
   --network "$NETWORK" \
   --key-name "$KEY" \
-  --user-data cloud-init/alpine-nginx.yaml \
+  --user-data cloud-init/alpine-web.yaml \
   "$VM_NAME"
