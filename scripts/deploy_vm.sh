@@ -34,7 +34,8 @@ FLAVOR="Minus"
 NETWORK="LAN-LABO"
 KEY_NAME="zoly-key"
 
-CLOUD_INIT_FILE="$REPO_ROOT/cloud-init/alpine-web.yaml"
+CLOUD_INIT_SRC="$REPO_ROOT/cloud-init/alpine-web.yaml"
+CLOUD_INIT_DST="/var/snap/microstack/common/var/alpine-web.yaml"
 
 # -------------------------------------------------
 # Sanity checks
@@ -46,18 +47,16 @@ if [ -z "$MICROSTACK_OPENSTACK" ]; then
   exit 1
 fi
 
-if [ ! -f "$CLOUD_INIT_FILE" ]; then
-  echo "❌ cloud-init file not found:"
-  echo "   $CLOUD_INIT_FILE"
-  ls -l "$REPO_ROOT/cloud-init" || true
+if [ ! -f "$CLOUD_INIT_SRC" ]; then
+  echo "❌ cloud-init file not found: $CLOUD_INIT_SRC"
   exit 1
 fi
 
-echo "cloud-init file detected:"
-ls -l "$CLOUD_INIT_FILE"
+echo "cloud-init source file:"
+ls -l "$CLOUD_INIT_SRC"
 
 # -------------------------------------------------
-# Verify sudo access (non-interactive)
+# Verify sudo access
 # -------------------------------------------------
 if ! sudo -n "$MICROSTACK_OPENSTACK" token issue >/dev/null 2>&1; then
   echo "❌ sudo access to microstack.openstack is not allowed without password"
@@ -67,7 +66,16 @@ fi
 echo "sudo access verified"
 
 # -------------------------------------------------
-# Check if VM already exists (idempotency)
+# Prepare cloud-init for MicroStack (snap-safe path)
+# -------------------------------------------------
+sudo cp "$CLOUD_INIT_SRC" "$CLOUD_INIT_DST"
+sudo chmod 644 "$CLOUD_INIT_DST"
+
+echo "📄 cloud-init copied to MicroStack common directory:"
+sudo ls -l "$CLOUD_INIT_DST"
+
+# -------------------------------------------------
+# Idempotency check
 # -------------------------------------------------
 if sudo "$MICROSTACK_OPENSTACK" server show "$VM_NAME" >/dev/null 2>&1; then
   echo "⚠️ VM '$VM_NAME' already exists — deployment skipped"
@@ -84,7 +92,7 @@ sudo "$MICROSTACK_OPENSTACK" server create \
   --flavor "$FLAVOR" \
   --network "$NETWORK" \
   --key-name "$KEY_NAME" \
-  --user-data "$CLOUD_INIT_FILE" \
+  --user-data "$CLOUD_INIT_DST" \
   "$VM_NAME"
 
 echo "VM '$VM_NAME' deployment successfully triggered"
