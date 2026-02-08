@@ -8,7 +8,7 @@ jobs:
   deploy:
     runs-on: self-hosted
     env:
-      OS_PASSWORD: ${{ secrets.OS_PASSWORD }}
+      OS_PASSWORD: ${{ secrets.MICROSTACK }}
     steps:
       - uses: actions/checkout@v4
 
