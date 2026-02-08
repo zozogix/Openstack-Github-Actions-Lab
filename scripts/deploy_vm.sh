@@ -10,7 +10,7 @@ IMAGE="Alpine3.21"
 FLAVOR="Minus"
 NETWORK="LAN-LABO"
 KEY="zoly-key"
-USER_DATA="cloud-init/alpine-web.yaml"
+USER_DATA="$(pwd)/cloud-init/alpine-web.yaml"
 
 # ---- Sanity checks ----
 MICROSTACK_OPENSTACK=$(command -v microstack.openstack || true)
