@@ -1,32 +1,30 @@
 #cloud-config
 
 packages:
-  - sudo
   - nginx
   - openssh
   - curl
-
+  - sudo
 
 users:
   - name: zozogix
+    groups: wheel
+    shell: /bin/ash
     sudo: ALL=(ALL) NOPASSWD:ALL
-    shell: /bin/sh
-    lock_passwd: false
-    passwd: $6$XoWfm5JRdUG5R/m/$nYaa/7zUMfsWchLZhWsknhuPePaFklz9uRIYh8rcAHYMKN4QLdm27G2V9JXuLFxEwR9Hjc43KxO/CvEGKuM92.
     ssh_authorized_keys:
       - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE386ck1RPdfatEflnIy12GNgCqfU2yKpPCkW1D/l0d1 user@openstack
 
-ssh_pwauth: true
-
-chpasswd:
-  expire: false
+ssh_pwauth: false
+disable_root: true
 
 runcmd:
-  # SSH
+  # Enable and start SSH
   - rc-update add sshd default
   - service sshd start
 
-  # NGINX
+  # Enable and start nginx
   - rc-update add nginx default
   - service nginx start
+
+  # Web page
   - echo "<h1>GitHub Actions + OpenStack success!</h1>" > /var/www/localhost/htdocs/index.html
