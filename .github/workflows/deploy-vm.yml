@@ -12,10 +12,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Load OpenStack credentials
-        run: |
-          source ~/openrc.sh
-          openstack server list
-      
       - name: Deploy Alpine VM
+        shell: bash
         run: ./scripts/deploy_vm.sh
