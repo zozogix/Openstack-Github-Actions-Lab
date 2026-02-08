@@ -7,14 +7,14 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
-
+    env:
+      OS_PASSWORD: ${{ secrets.OS_PASSWORD }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Rend deploy_vm.sh executable
+      - name: Make deploy_vm.sh executable
         run: chmod +x scripts/deploy_vm.sh
-        
+
       - name: Deploy Alpine VM
         shell: bash
         run: ./scripts/deploy_vm.sh
