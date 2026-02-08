@@ -96,3 +96,20 @@ sudo "$MICROSTACK_OPENSTACK" server create \
   "$VM_NAME"
 
 echo "VM '$VM_NAME' deployment successfully triggered"
+
+# -------------------------------------------------
+# Allocate Floating IP
+# -------------------------------------------------
+echo "Allocating floating IP..."
+
+FLOATING_IP=$(sudo "$MICROSTACK_OPENSTACK" floating ip create external -f value -c floating_ip_address)
+
+echo "Floating IP allocated: $FLOATING_IP"
+
+# -------------------------------------------------
+# Attach Floating IP to VM
+# -------------------------------------------------
+sudo "$MICROSTACK_OPENSTACK" server add floating ip "$VM_NAME" "$FLOATING_IP"
+
+echo "Floating IP $FLOATING_IP attached to VM '$VM_NAME'"
+
