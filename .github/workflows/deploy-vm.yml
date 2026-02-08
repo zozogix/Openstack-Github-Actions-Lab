@@ -12,8 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Fix cloud-init permissions
-        run: chmod 644 cloud-init/alpine-web.yaml
+      - name: Fix cloud-init permissions (file + dirs)
+        run: |
+         chmod 755 .
+         chmod 755 cloud-init
+         chmod 644 cloud-init/alpine-web.yaml
 
       - name: Make deploy_vm.sh executable
         run: chmod +x scripts/deploy_vm.sh
