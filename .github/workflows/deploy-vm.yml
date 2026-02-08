@@ -12,6 +12,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Rend deploy_vm.sh executable
+        run: chmod +x scripts/deploy_vm.sh
+        
       - name: Deploy Alpine VM
         shell: bash
         run: ./scripts/deploy_vm.sh
