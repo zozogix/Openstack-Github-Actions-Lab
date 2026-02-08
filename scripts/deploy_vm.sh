@@ -13,20 +13,25 @@ KEY="zoly-key"
 USER_DATA="cloud-init/alpine-web.yaml"
 
 # ---- Sanity checks ----
-command -v openstack >/dev/null 2>&1 || {
-  echo "❌ OpenStack CLI not found"
-  exit 1
+MICROSTACK_OPENSTACK=$(command -v microstack.openstack || true)
+if [ -z "$MICROSTACK_OPENSTACK" ]; then
+    echo "❌ microstack.openstack CLI not found"
+    exit 1
+fi
+
+# Make sure we can run it with sudo
+sudo -n $MICROSTACK_OPENSTACK token issue >/dev/null 2>&1 || {
+    echo "❌ Cannot run 'sudo microstack.openstack'. Make sure NOPASSWD sudo is set for this user."
+    exit 1
 }
 
-openstack token issue >/dev/null
-
 # ---- Deploy VM ----
-openstack server create \
-  --image "$IMAGE" \
-  --flavor "$FLAVOR" \
-  --network "$NETWORK" \
-  --key-name "$KEY" \
-  --user-data "$USER_DATA" \
-  "$VM_NAME"
+sudo $MICROSTACK_OPENSTACK server create \
+    --image "$IMAGE" \
+    --flavor "$FLAVOR" \
+    --network "$NETWORK" \
+    --key-name "$KEY" \
+    --user-data "$USER_DATA" \
+    "$VM_NAME"
 
 echo "✅ VM '$VM_NAME' deployment triggered"
